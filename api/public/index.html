@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smart Trolley</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+  <div class="container">
+
+    <!-- HEADER -->
+    <div class="header">
+      <h1>Smart Trolley</h1>
+      <button class="catalog-btn" onclick="showCatalog()">Catalog</button>
+    </div>
+
+    <!-- CART SECTION -->
+    <div class="card" id="cart-section">
+
+      <h2>Your Cart</h2>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Item</th>
+            <th>Price (₹)</th>
+          </tr>
+        </thead>
+        <tbody id="cart-items"></tbody>
+      </table>
+
+      <div class="summary">
+        <p>GST (18%): ₹0.00</p>
+        <p class="total">Total: ₹0.00</p>
+      </div>
+
+      <button class="checkout-btn">Checkout</button>
+
+    </div>
+
+    <!-- CATALOG SECTION -->
+    <div class="card hidden" id="catalog-section">
+
+      <h2>Catalog</h2>
+
+      <div id="catalog-container"></div>
+
+      <button class="back-btn" onclick="showCart()">← Back</button>
+
+    </div>
+
+  </div>
+
+  <script src="script.js"></script>
+
+</body>
+</html>

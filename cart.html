@@ -48,34 +48,41 @@
                     </div>
                 </div>
 
-                <button class="checkout-btn">Checkout</button>
+                <button class="checkout-btn" onclick="handleCheckout()">Checkout</button>
             </section>
         </main>
     </div>
 
+    <div id="paymentModal" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); background:white; padding:30px; border-radius:15px; box-shadow:0 0 20px rgba(0,0,0,0.5); text-align:center; z-index:1000; width: 300px;">
+        <h3>Scan to Pay</h3>
+        <div id="qr-container"></div>
+        <p>Total Amount: <span id="modalTotal">₹0.00</span></p>
+        <button onclick="closeModal()" class="nav-btn" style="background: #28a745; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">I have Paid</button>
+    </div>
+
     <script src="script.js"></script>
+    <script>
+        function showUPI() {
+            // Get the total from the main dashboard
+            const totalText = document.getElementById('total-price').innerText;
+            document.getElementById('modalTotal').innerText = totalText;
+            
+            // Generate QR Code based on the actual total (remove '₹' for the URL)
+            const numericTotal = totalText.replace('₹', '');
+            const qrContainer = document.getElementById('qr-container');
+            
+            // Replace 'yourname@upi' with your real UPI ID
+            const upiUrl = `upi://pay?pa=yourname@upi&pn=SmartTrolley&am=${numericTotal}&cu=INR`;
+            qrContainer.innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(upiUrl)}" alt="UPI QR">`;
+            
+            document.getElementById('paymentModal').style.display = 'block';
+        }
 
-    <div id="paymentModal" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); background:white; padding:30px; border-radius:15px; box-shadow:0 0 20px rgba(0,0,0,0.5); text-align:center; z-index:1000;">
-    <h3>Scan to Pay</h3>
-    <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=yourname@upi&pn=SmartTrolley&am=170&cu=INR" alt="UPI QR">
-    <p>Total: ₹<span id="modalTotal">0.00</span></p>
-    <button onclick="closeModal()" class="nav-btn">I have Paid</button>
-</div>
-
-<script>
-function showUPI() {
-    // We target 'total-price' to match your script.js ID
-    const totalElement = document.getElementById('total-price');
-    const totalText = totalElement.innerText; 
-    
-    document.getElementById('modalTotal').innerText = totalText;
-    document.getElementById('paymentModal').style.display = 'block';
-}
-function closeModal() {
-    document.getElementById('paymentModal').style.display = 'none';
-    // Clear the UI after they acknowledge payment
-    location.reload(); 
-}
-</script>
+        function closeModal() {
+            document.getElementById('paymentModal').style.display = 'none';
+            // Final refresh to clear the UI
+            location.reload();
+        }
+    </script>
 </body>
 </html>

@@ -7,14 +7,18 @@ async function refreshCart() {
         tableBody.innerHTML = '';
         let subtotal = 0;
 
-        data.items.forEach(item => {
-            subtotal += item.price;
-            tableBody.innerHTML += `
-                <tr>
-                    <td>${item.name}</td>
-                    <td>₹${item.price.toFixed(2)}</td>
-                </tr>`;
-        });
+        if (data.items.length === 0) {
+            tableBody.innerHTML = '<tr><td colspan="2" class="empty-msg">Waiting for scans...</td></tr>';
+        } else {
+            data.items.forEach(item => {
+                subtotal += item.price;
+                tableBody.innerHTML += `
+                    <tr>
+                        <td>${item.name}</td>
+                        <td>₹${item.price.toFixed(2)}</td>
+                    </tr>`;
+            });
+        }
 
         const gst = subtotal * 0.18;
         const total = subtotal + gst;
@@ -25,6 +29,7 @@ async function refreshCart() {
         console.error("Polling error", e);
     }
 }
+
 async function handleCheckout() {
     if (!confirm("Confirm payment and clear trolley?")) return;
 
@@ -32,11 +37,11 @@ async function handleCheckout() {
         const response = await fetch('/api/checkout', { method: 'POST' });
         
         if (response.ok) {
-            // Show the QR code first
+            // Trigger the UI modal we built in the HTML
             showUPI(); 
         } else {
             const data = await response.json();
-            alert("Checkout failed: " + data.error);
+            alert("Checkout failed: " + (data.error || "Unknown error"));
         }
     } catch (err) {
         console.error("Checkout Error:", err);

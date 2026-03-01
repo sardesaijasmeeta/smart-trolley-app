@@ -1,31 +1,102 @@
+:root {
+    --primary-dark: #0f172a;
+    --bg-light: #f8fafc;
+    --border-color: #e2e8f0;
+    --text-main: #1e293b;
+    --accent-green: #16a34a;
+    --accent-red: #dc2626;
+}
+
 body {
-    font-family: Arial, sans-serif;
-    text-align: center;
-    background: #f4f4f4;
+    font-family: 'Inter', system-ui, sans-serif;
+    background-color: var(--bg-light);
+    color: var(--text-main);
+    margin: 0;
+    padding: 0;
 }
 
-h1 {
-    margin-top: 30px;
+.app-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
 }
 
-.catalog {
-    margin-top: 50px;
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--border-color);
 }
 
-.category-card {
-    width: 200px;
-    margin: auto;
-    padding: 30px;
+.nav-btn {
+    background-color: var(--primary-dark);
+    color: white;
+    padding: 8px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.cart-section {
     background: white;
+    border-radius: 20px;
+    padding: 30px;
+    margin-top: 30px;
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+th {
+    text-align: left;
+    padding: 12px;
+    background: #f1f5f9;
+    font-size: 14px;
+    color: #64748b;
+}
+
+td {
+    padding: 15px 12px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.billing-summary {
+    border-top: 2px solid var(--primary-dark);
+    padding-top: 20px;
+    margin-top: 20px;
+}
+
+.summary-line {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.summary-line.total {
+    font-size: 20px;
+    color: var(--primary-dark);
+}
+
+.checkout-btn {
+    width: 100%;
+    background: var(--primary-dark);
+    color: white;
+    border: none;
+    padding: 15px;
     border-radius: 10px;
+    font-weight: bold;
     cursor: pointer;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    margin-top: 20px;
 }
 
-.category-card:hover {
-    background: #eaeaea;
-}
-
-.cart-button {
-    margin-top: 40px;
+.empty-msg {
+    text-align: center;
+    color: #94a3b8;
+    padding: 40px 0;
 }

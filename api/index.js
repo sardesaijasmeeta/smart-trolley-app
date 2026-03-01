@@ -6,9 +6,11 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log("MongoDB Connected"))
-  .catch(err => console.error(err));
+// Connection logic for Serverless
+const connectDB = async () => {
+  if (mongoose.connections[0].readyState) return;
+  await mongoose.connect(process.env.MONGO_URI);
+};
 
 const productSchema = new mongoose.Schema({
   rfid: String,
@@ -20,48 +22,53 @@ const productSchema = new mongoose.Schema({
 
 const Product = mongoose.models.Product || mongoose.model("Product", productSchema);
 
+// Note: In Vercel, this variable resets often. For a real app, 
+// you'd store 'cart' in a separate MongoDB collection.
 let cart = [];
 
-/* ADD ITEM */
-app.post("/add-item", async (req, res) => {
-  const { rfid } = req.body;
+/* 1. ADD ITEM (Used by ESP8266) */
+app.post("/api/add-item", async (req, res) => {
+  try {
+    await connectDB();
+    const { rfid } = req.body; // ESP sends {"tagId": "..."} - see step 2
+    
+    // Find product by RFID
+    const product = await Product.findOne({ rfid: rfid.toUpperCase() });
 
-  const product = await Product.findOne({ rfid });
+    if (!product) return res.status(404).json({ message: "Product Tag not recognized" });
+    if (product.stock <= 0) return res.status(400).json({ message: "Out of stock" });
 
-  if (!product) return res.status(404).json({ message: "Not found" });
+    product.stock -= 1;
+    await product.save();
 
-  if (product.stock <= 0) {
-    return res.status(400).json({ message: "Out of stock" });
+    cart.push(product);
+    res.status(200).json(cart);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
-
-  product.stock -= 1;
-  await product.save();
-
-  cart.push(product);
-  res.json(cart);
 });
 
-/* GET CART */
-app.get("/cart", (req, res) => {
-  res.json(cart);
+/* 2. GET CART (Used by script.js) */
+app.get("/api/cart", (req, res) => {
+  res.json({ items: cart });
 });
 
-/* PRODUCTS */
-app.get("/products", async (req, res) => {
+/* 3. PRODUCTS (Used by Catalog page) */
+app.get("/api/products", async (req, res) => {
+  await connectDB();
   const products = await Product.find();
   res.json(products);
 });
 
-/* SEED */
-app.get("/seed", async (req, res) => {
+/* 4. SEED DATA (Run this once in browser to add your tag) */
+app.get("/api/seed", async (req, res) => {
+  await connectDB();
   await Product.deleteMany({});
-
   await Product.insertMany([
-    { rfid: "1111", name: "Lip Balm 1", price: 100, category: "Skincare", stock: 1 },
-    { rfid: "2222", name: "Lip Balm 2", price: 120, category: "Skincare", stock: 1 }
+    { rfid: "ED027A05", name: "Amul Milk", price: 60, category: "Dairy", stock: 10 },
+    { rfid: "1111", name: "Oreo", price: 30, category: "Snacks", stock: 5 }
   ]);
-
-  res.json({ message: "Seeded" });
+  res.json({ message: "Database seeded with your Tag ID!" });
 });
 
 module.exports = app;

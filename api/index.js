@@ -6,20 +6,25 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+// State variable to prevent multiple connections
+let isConnected = false;
+
 const connectDB = async () => {
-  if (mongoose.connections[0].readyState) return;
-  await mongoose.connect(process.env.MONGO_URI);
+  if (isConnected) return;
+  try {
+    // Note: We use the MONGO_URI from your Vercel Env variables
+    const db = await mongoose.connect(process.env.MONGO_URI, {
+        serverSelectionTimeoutMS: 5000 // Fails fast if connection is blocked
+    });
+    isConnected = db.connections[0].readyState;
+    console.log("MongoDB Connected");
+  } catch (err) {
+    console.error("MongoDB Connection Error:", err);
+    throw err;
+  }
 };
 
-const productSchema = new mongoose.Schema({
-  rfid: String,
-  name: String,
-  price: Number,
-  category: String,
-  stock: Number
-});
-
-const Product = mongoose.models.Product || mongoose.model("Product", productSchema);
+// ... keep your schema and routes below
 
 // Schema for items currently in the trolley
 const cartSchema = new mongoose.Schema({

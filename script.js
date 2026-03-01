@@ -25,6 +25,16 @@ async function refreshCart() {
         console.error("Polling error", e);
     }
 }
+async function handleCheckout() {
+    if (confirm("Proceed to pay and clear cart?")) {
+        const response = await fetch('https://smart-trolley-app-delta.vercel.app/api/checkout', {
+            method: 'POST'
+        });
+        const data = await response.json();
+        alert(data.message);
+        location.reload(); // Refresh to show empty cart
+    }
+}
 
 // Update UI every 2 seconds
 setInterval(refreshCart, 2000);

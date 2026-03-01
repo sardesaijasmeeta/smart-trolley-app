@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Store Catalog</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <h2>Store Catalog</h2>
+            <a href="cart.html" class="nav-btn">Back to Cart</a>
+        </header>
+
+        <div id="catalog-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px;">
+            </div>
+    </div>
+
+    <script>
+        async function loadCatalog() {
+            const res = await fetch('/api/products');
+            const data = await res.json();
+            const grid = document.getElementById('catalog-grid');
+            
+            grid.innerHTML = data.products.map(p => `
+                <div style="background: white; padding: 15px; border-radius: 12px; border: 1px solid #ddd;">
+                    <h3>${p.name}</h3>
+                    <p>Price: ₹${p.price}</p>
+                    <p style="color: ${p.stock > 0 ? 'green' : 'red'}">
+                        Stock: ${p.stock > 0 ? p.stock : 'Out of Stock'}
+                    </p>
+                </div>
+            `).join('');
+        }
+        loadCatalog();
+    </script>
+</body>
+</html>

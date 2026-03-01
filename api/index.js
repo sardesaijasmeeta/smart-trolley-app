@@ -43,6 +43,7 @@ app.get("/api/seed", async (req, res) => {
     await Product.insertMany([
       { rfid: "ED027A05", name: "Amul Milk", price: 60, category: "Dairy", stock: 10 },
       { rfid: "1111", name: "Oreo", price: 30, category: "Snacks", stock: 5 }
+      { rfid: "6AA69B02", name: "Dark Chocolate", price: 80, category: "Snacks", stock: 8 }
     ]);
     
     res.json({ message: "Seeded Successfully!" });
@@ -71,7 +72,8 @@ app.post("/api/add-item", async (req, res) => {
     } else {
       // ADD LOGIC
       const product = await Product.findOne({ rfid: rfid });
-      if (!product) return res.status(404).json({ message: "Product Not Found" });
+if (!product) return res.status(404).json({ message: "Product Not Found" });
+if (product.stock <= 0) return res.status(400).json({ message: "Out of Stock" });
 
       const newEntry = new Cart({ rfid: product.rfid, name: product.name, price: product.price });
       await newEntry.save();
@@ -92,6 +94,22 @@ app.get("/api/cart", async (req, res) => {
     await connectDB();
     const items = await Cart.find().sort({ addedAt: -1 });
     res.json({ items });
+});
+/* GET ALL PRODUCTS */
+app.get("/api/products", async (req, res) => {
+    await connectDB();
+    const allProducts = await Product.find();
+    res.json({ products: allProducts });
+});
+/* CHECKOUT ROUTE */
+app.post("/api/checkout", async (req, res) => {
+  try {
+    await connectDB();
+    await Cart.deleteMany({}); // Clear the user's cart
+    res.json({ message: "Payment Successful. Cart Cleared!" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 module.exports = app;

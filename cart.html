@@ -64,12 +64,17 @@
 
 <script>
 function showUPI() {
-    const total = document.getElementById('totalPrice').innerText;
-    document.getElementById('modalTotal').innerText = total;
+    // We target 'total-price' to match your script.js ID
+    const totalElement = document.getElementById('total-price');
+    const totalText = totalElement.innerText; 
+    
+    document.getElementById('modalTotal').innerText = totalText;
     document.getElementById('paymentModal').style.display = 'block';
 }
 function closeModal() {
     document.getElementById('paymentModal').style.display = 'none';
+    // Clear the UI after they acknowledge payment
+    location.reload(); 
 }
 </script>
 </body>

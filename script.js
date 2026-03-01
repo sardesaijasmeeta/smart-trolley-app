@@ -26,19 +26,16 @@ async function refreshCart() {
     }
 }
 async function handleCheckout() {
-    // 1. Ask for confirmation
     if (!confirm("Confirm payment and clear trolley?")) return;
 
     try {
         const response = await fetch('/api/checkout', { method: 'POST' });
-        const data = await response.json();
-
+        
         if (response.ok) {
-            // 2. Show the UPI QR Code (Instructional)
+            // Show the QR code first
             showUPI(); 
-            alert("Payment Successful! Your cart has been cleared.");
-            location.reload(); // Refresh the page
         } else {
+            const data = await response.json();
             alert("Checkout failed: " + data.error);
         }
     } catch (err) {

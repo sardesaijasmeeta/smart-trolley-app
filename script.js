@@ -1,25 +1,30 @@
-async function updateCart() {
+async function refreshCart() {
     try {
-        const response = await fetch('/api'); // Fetches scanned items from your MongoDB via the API
-        const data = await response.json();
+        const res = await fetch('/api/cart');
+        const data = await res.json();
+        const tableBody = document.getElementById('cart-items');
         
-        const cartTable = document.getElementById('cart-items');
-        cartTable.innerHTML = ''; // Clear old rows
-        
+        tableBody.innerHTML = '';
         let subtotal = 0;
+
         data.items.forEach(item => {
-            const row = `<tr><td>${item.name}</td><td>₹${item.price}</td></tr>`;
-            cartTable.innerHTML += row;
             subtotal += item.price;
+            tableBody.innerHTML += `
+                <tr>
+                    <td>${item.name}</td>
+                    <td>₹${item.price.toFixed(2)}</td>
+                </tr>`;
         });
 
         const gst = subtotal * 0.18;
+        const total = subtotal + gst;
+
         document.getElementById('gst-amount').innerText = `₹${gst.toFixed(2)}`;
-        document.getElementById('total-price').innerText = `₹${(subtotal + gst).toFixed(2)}`;
-    } catch (err) {
-        console.error("Error updating cart:", err);
+        document.getElementById('total-price').innerText = `₹${total.toFixed(2)}`;
+    } catch (e) {
+        console.error("Polling error", e);
     }
 }
 
-// Check for new items every 3 seconds
-setInterval(updateCart, 3000);
+// Update UI every 2 seconds
+setInterval(refreshCart, 2000);

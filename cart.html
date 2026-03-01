@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Trolley - Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <div class="logo-area">
+                <h1>Smart Trolley</h1>
+            </div>
+            <nav>
+                <a href="category.html" class="nav-btn">Catalog</a>
+            </nav>
+        </header>
+
+        <main>
+            <section class="cart-section">
+                <h2>Your Cart</h2>
+                
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Price (₹)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cart-items">
+                            <tr>
+                                <td colspan="2" class="empty-msg">Waiting for scans...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="billing-summary">
+                    <div class="summary-line">
+                        <span>GST (18%):</span>
+                        <span id="gst-amount">₹0.00</span>
+                    </div>
+                    <div class="summary-line total">
+                        <span><strong>Total:</strong></span>
+                        <span id="total-price"><strong>₹0.00</strong></span>
+                    </div>
+                </div>
+
+                <button class="checkout-btn">Checkout</button>
+            </section>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

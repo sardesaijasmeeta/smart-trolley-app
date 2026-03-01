@@ -42,7 +42,7 @@ app.get("/api/seed", async (req, res) => {
     
     await Product.insertMany([
       { rfid: "ED027A05", name: "Amul Milk", price: 60, category: "Dairy", stock: 10 },
-      { rfid: "1111", name: "Oreo", price: 30, category: "Snacks", stock: 5 }
+      { rfid: "1111", name: "Oreo", price: 30, category: "Snacks", stock: 5 },
       { rfid: "6AA69B02", name: "Dark Chocolate", price: 80, category: "Snacks", stock: 8 }
     ]);
     

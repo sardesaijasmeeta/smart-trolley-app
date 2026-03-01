@@ -26,13 +26,23 @@ async function refreshCart() {
     }
 }
 async function handleCheckout() {
-    if (confirm("Proceed to pay and clear cart?")) {
-        const response = await fetch('https://smart-trolley-app-delta.vercel.app/api/checkout', {
-            method: 'POST'
-        });
+    // 1. Ask for confirmation
+    if (!confirm("Confirm payment and clear trolley?")) return;
+
+    try {
+        const response = await fetch('/api/checkout', { method: 'POST' });
         const data = await response.json();
-        alert(data.message);
-        location.reload(); // Refresh to show empty cart
+
+        if (response.ok) {
+            // 2. Show the UPI QR Code (Instructional)
+            showUPI(); 
+            alert("Payment Successful! Your cart has been cleared.");
+            location.reload(); // Refresh the page
+        } else {
+            alert("Checkout failed: " + data.error);
+        }
+    } catch (err) {
+        console.error("Checkout Error:", err);
     }
 }
 

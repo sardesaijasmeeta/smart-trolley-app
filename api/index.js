@@ -53,30 +53,38 @@ app.get("/api/seed", async (req, res) => {
 
 /* ADD ITEM ROUTE */
 app.post("/api/add-item", async (req, res) => {
-    try {
-      await connectDB();
-      const { rfid } = req.body;
-      const cleanRfid = rfid.toUpperCase().trim();
-  
-      const existingInCart = await Cart.findOne({ rfid: cleanRfid });
-  
-      if (existingInCart) {
-        await Cart.deleteOne({ rfid: cleanRfid });
-        await Product.findOneAndUpdate({ rfid: cleanRfid }, { $inc: { stock: 1 } });
-        return res.status(200).json({ message: "Removed" });
-      } else {
-        const product = await Product.findOne({ rfid: cleanRfid });
-        if (!product) return res.status(404).json({ message: "Unknown Tag" });
-  
-        const newCartItem = new Cart({ rfid: product.rfid, name: product.name, price: product.price });
-        await newCartItem.save();
-        product.stock -= 1;
-        await product.save();
-        return res.status(200).json({ message: "Added" });
-      }
-    } catch (err) {
-      res.status(500).json({ error: err.message });
+  try {
+    await connectDB();
+    // 1. Force uppercase and remove any hidden spaces
+    const rfid = req.body.rfid.toUpperCase().trim();
+    console.log("Processing RFID:", rfid);
+
+    // 2. Check if this specific RFID is already in the Cart
+    const itemInCart = await Cart.findOne({ rfid: rfid });
+
+    if (itemInCart) {
+      // REMOVE LOGIC
+      await Cart.deleteOne({ _id: itemInCart._id });
+      // Put 1 back into stock
+      await Product.findOneAndUpdate({ rfid: rfid }, { $inc: { stock: 1 } });
+      return res.status(200).json({ message: "Removed from Cart" });
+    } else {
+      // ADD LOGIC
+      const product = await Product.findOne({ rfid: rfid });
+      if (!product) return res.status(404).json({ message: "Product Not Found" });
+
+      const newEntry = new Cart({ rfid: product.rfid, name: product.name, price: product.price });
+      await newEntry.save();
+      
+      // Deduct 1 from stock
+      product.stock -= 1;
+      await product.save();
+      return res.status(200).json({ message: "Added to Cart" });
     }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
 });
 
 /* GET CART ROUTE */

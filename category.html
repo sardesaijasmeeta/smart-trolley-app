@@ -23,14 +23,15 @@
             const grid = document.getElementById('catalog-grid');
             
             grid.innerHTML = data.products.map(p => `
-                <div style="background: white; padding: 15px; border-radius: 12px; border: 1px solid #ddd;">
-                    <h3>${p.name}</h3>
-                    <p>Price: ₹${p.price}</p>
-                    <p style="color: ${p.stock > 0 ? 'green' : 'red'}">
-                        Stock: ${p.stock > 0 ? p.stock : 'Out of Stock'}
-                    </p>
-                </div>
-            `).join('');
+    <div style="background: white; padding: 15px; border-radius: 12px; border: 1px solid #ddd; box-shadow: 2px 2px 5px rgba(0,0,0,0.1);">
+        <h3 style="margin-bottom: 5px;">${p.name}</h3>
+        <p style="color: #666; font-size: 0.9em; margin-bottom: 10px;">Location: <b>${p.aisle}</b></p>
+        <p>Price: ₹${p.price}</p>
+        <p style="color: ${p.stock > 0 ? 'green' : 'red'}">
+            Stock: ${p.stock > 0 ? p.stock : 'Out of Stock'}
+        </p>
+    </div>
+`).join('');
         }
         loadCatalog();
     </script>

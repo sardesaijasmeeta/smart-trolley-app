@@ -19,7 +19,8 @@ const productSchema = new mongoose.Schema({
   name: String,
   price: Number,
   category: String,
-  stock: Number
+  stock: Number,
+  aisle: String
 });
 
 const cartSchema = new mongoose.Schema({
@@ -41,9 +42,9 @@ app.get("/api/seed", async (req, res) => {
     await Cart.deleteMany({});
     
     await Product.insertMany([
-      { rfid: "ED027A05", name: "Amul Milk", price: 60, category: "Dairy", stock: 10 },
-      { rfid: "1111", name: "Oreo", price: 30, category: "Snacks", stock: 5 },
-      { rfid: "6AA69B02", name: "Dark Chocolate", price: 80, category: "Snacks", stock: 8 }
+      { rfid: "ED027A05", name: "Gokul Milk", price: 60, category: "Dairy",aisle: "Aisle 1 ", stock: 10 },
+      { rfid: "1111", name: "Oreo", price: 30, category: "Snacks",aisle: "Aisle 2 (Biscuits)", stock: 5 },
+      { rfid: "6AA69B02", name: "Dark Chocolate", price: 80, aisle: "Aisle 6",category: "Snacks", stock: 8 }
     ]);
     
     res.json({ message: "Seeded Successfully!" });
